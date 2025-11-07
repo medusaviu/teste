@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-9">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REDHEPE - Rede Digital da História da Educação de Pernambuco</title>
+    <title>Repositório Digital da História da Educação de Pernambuco</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         /* VARIÁVEIS E RESET */
@@ -14,6 +14,7 @@
             --light: #F8F9FA;
             --dark: #212529;
             --text: #333;
+            --gray: #6c757d;
         }
 
         * {
@@ -24,51 +25,37 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--light);
+            background: white;
             color: var(--text);
             line-height: 1.6;
         }
 
-        /* HEADER */
+        /* HEADER MINIMALISTA */
         header {
             background: white;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-            position: sticky;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            width: 100%;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: var(--dark);
+            letter-spacing: 2px;
         }
 
-        .logo-placeholder {
-            width: 50px;
-            height: 50px;
-            background: var(--accent);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* MENU */
         .nav-menu {
             display: flex;
             gap: 2rem;
@@ -77,235 +64,146 @@
 
         .nav-menu a {
             text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            position: relative;
+            color: var(--gray);
+            font-weight: 400;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
         }
 
         .nav-menu a:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
+            color: var(--primary);
         }
 
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .nav-menu a:hover::after {
-            width: 80%;
-        }
-
-        /* HERO SECTION */
+        /* HERO SECTION COM SLIDER */
         .hero {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
+            margin-top: 80px;
+            height: 70vh;
             position: relative;
             overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
+        .slider {
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=2064&q=80') center/cover;
-            opacity: 0.2;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            background-size: cover;
+            background-position: center;
         }
 
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-1 { background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
+        .slide-2 { background-image: url('https://images.unsplash.com/photo-1588072432836-4d8acc919018?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
+        .slide-3 { background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
+
         .hero-content {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
             z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         .hero h1 {
             font-size: 3rem;
+            font-weight: 300;
             margin-bottom: 1rem;
-            animation: fadeInUp 1s ease;
+            letter-spacing: 3px;
         }
 
         .hero p {
             font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
-            animation: fadeInUp 1s ease 0.2s both;
-        }
-
-        /* MAPA SECTION */
-        .mapa-section {
-            padding: 4rem 2rem;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
-        #map {
-            height: 500px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            font-weight: 300;
             margin-bottom: 2rem;
-            animation: fadeIn 1s ease;
         }
 
-        /* MINHA ESCOLA MINHA HISTÓRIA */
-        .contribuicao-section {
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        }
-
-        .form-contribuicao {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            animation: slideUp 0.8s ease;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.1);
-        }
-
-        .btn {
-            background: var(--accent);
+        .btn-hero {
+            background: transparent;
             color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
+            border: 2px solid white;
+            padding: 0.8rem 2rem;
+            border-radius: 0;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
             display: inline-block;
         }
 
-        .btn:hover {
-            background: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* GALERIA */
-        .galeria {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .galeria-item {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .galeria-item:hover {
-            transform: scale(1.05);
-        }
-
-        .galeria-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .galeria-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 1rem;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .galeria-item:hover .galeria-overlay {
-            transform: translateY(0);
-        }
-
-        /* ACERVO SECTION */
-        .acervo-section {
-            padding: 4rem 2rem;
+        .btn-hero:hover {
             background: white;
+            color: var(--dark);
         }
 
+        /* SEÇÕES */
+        .section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--dark);
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* MAPA */
+        #map {
+            height: 400px;
+            border-radius: 0;
+            margin-bottom: 2rem;
+        }
+
+        .map-filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--gray);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .filter-btn.active {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+
+        /* ACERVO */
         .acervo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .acervo-card {
-            background: white;
-            border-radius: 15px;
+            border: 1px solid #e9ecef;
             padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
 
@@ -317,191 +215,187 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 10px;
             margin-bottom: 1rem;
         }
 
         .acervo-card h3 {
-            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 400;
             margin-bottom: 0.5rem;
+            color: var(--dark);
         }
 
         .acervo-meta {
-            color: #666;
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* PROFESSORES */
+        .professores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .professor-card {
+            text-align: center;
+            padding: 2rem 1rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .professor-foto {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid #f8f9fa;
+        }
+
+        .professor-card h3 {
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .professor-meta {
+            color: var(--gray);
             font-size: 0.9rem;
             margin-bottom: 1rem;
         }
 
         /* TOUR VIRTUAL */
-        .tour-section {
-            padding: 4rem 2rem;
-            background: white;
-        }
-
         .tour-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--light);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            animation: fadeIn 1s ease;
+            border: 1px solid #e9ecef;
+            margin-bottom: 2rem;
         }
 
         .tour-viewer {
             height: 400px;
-            background: linear-gradient(45deg, #8B4513, #A0522D);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f8f9fa;
             position: relative;
             overflow: hidden;
         }
 
-        .tour-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            padding: 1.5rem;
+        .tour-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* FORMULÁRIO SIMPLES */
+        .form-section {
+            background: #f8f9fa;
+            padding: 3rem 2rem;
+        }
+
+        .form-simple {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e9ecef;
             background: white;
+            font-size: 0.9rem;
         }
 
-        .tour-hotspot {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--accent);
-            border-radius: 50%;
+        .btn-form {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
             cursor: pointer;
-            animation: pulse 2s infinite;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: background 0.3s ease;
         }
 
-        .tour-hotspot::before {
-            content: '🔍';
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.2rem;
+        .btn-form:hover {
+            background: var(--primary);
         }
 
-        /* ANIMAÇÕES */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 162, 97, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(244, 162, 97, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 162, 97, 0); }
-        }
-
-        /* ACESSIBILIDADE */
-        .acessibilidade {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        /* BOTÃO MINHA ESCOLA */
+        .btn-escola {
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            padding: 1rem 2rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            margin: 2rem auto;
+            display: block;
+            transition: background 0.3s ease;
         }
 
-        .acessibilidade:hover {
-            transform: scale(1.1);
+        .btn-escola:hover {
+            background: var(--dark);
         }
 
-        .alto-contraste {
-            filter: invert(1) hue-rotate(180deg);
+        /* FOOTER */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-top: 2rem;
         }
 
         /* RESPONSIVO */
         @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
             .nav-menu {
-                gap: 1rem;
+                display: none;
             }
 
             .hero h1 {
                 font-size: 2rem;
             }
 
-            #map {
-                height: 300px;
+            .section {
+                padding: 2rem 1rem;
             }
-        }
 
-        /* MODAL PARA ESCOLAS */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--dark);
+            .map-filters {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
@@ -509,250 +403,192 @@
     <!-- HEADER -->
     <header>
         <div class="header-container">
-            <div class="logo">
-                <div class="logo-placeholder">R</div>
-                REDHEPE
-            </div>
+            <div class="logo">REDHEPE</div>
             <nav>
                 <ul class="nav-menu">
-                    <li><a href="#inicio">Início</a></li>
-                    <li><a href="#mapa">Mapa das Escolas</a></li>
+                    <li><a href="#mapa">Mapa</a></li>
                     <li><a href="#acervo">Acervo</a></li>
-                    <li><a href="#contribuir">Minha Escola</a></li>
+                    <li><a href="#professores">Professores</a></li>
                     <li><a href="#tour">Tour Virtual</a></li>
+                    <li><a href="#contribuir">Contribuir</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section class="hero" id="inicio">
+    <!-- HERO COM SLIDER -->
+    <section class="hero">
+        <div class="slider">
+            <div class="slide slide-1 active"></div>
+            <div class="slide slide-2"></div>
+            <div class="slide slide-3"></div>
+        </div>
         <div class="hero-content">
-            <h1>Rede Digital da História da Educação de Pernambuco</h1>
-            <p>Preservando a memória educacional e conectando gerações através das histórias das escolas pernambucanas</p>
+            <h1>REPOSITÓRIO DIGITAL DA HISTÓRIA DA EDUCAÇÃO DE PERNAMBUCO</h1>
+            <p>Preservando memórias, conectando gerações</p>
+            <a href="#contribuir" class="btn-hero">Quero minha escola na história</a>
         </div>
     </section>
 
-    <!-- MAPA INTERATIVO -->
-    <section class="mapa-section" id="mapa">
-        <h2 class="section-title">Mapa das Escolas Históricas</h2>
-        <div id="map"></div>
-        <div style="text-align: center;">
-            <button class="btn" onclick="filtrarPorDecada('70')">Década de 70</button>
-            <button class="btn" onclick="filtrarPorDecada('80')">Década de 80</button>
-            <button class="btn" onclick="filtrarPorDecada('90')">Década de 90</button>
-            <button class="btn" onclick="filtrarPorDecada('todos')">Todas as Décadas</button>
+    <!-- MAPA -->
+    <section class="section" id="mapa">
+        <h2 class="section-title">MAPA DAS ESCOLAS HISTÓRICAS</h2>
+        <div class="map-filters">
+            <button class="filter-btn active" onclick="filtrarPorDecada('todos')">Todas</button>
+            <button class="filter-btn" onclick="filtrarPorDecada('60')">Anos 60</button>
+            <button class="filter-btn" onclick="filtrarPorDecada('70')">Anos 70</button>
+            <button class="filter-btn" onclick="filtrarPorDecada('80')">Anos 80</button>
         </div>
+        <div id="map"></div>
     </section>
 
     <!-- ACERVO -->
-    <section class="acervo-section" id="acervo">
-        <h2 class="section-title">Acervo Digital</h2>
+    <section class="section" id="acervo">
+        <h2 class="section-title">ACERVO DIGITAL</h2>
         <div class="acervo-grid">
             <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Livro antigo">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Livros antigos">
                 <h3>História da Educação no Sertão</h3>
-                <div class="acervo-meta">Artigo Científico • 2018 • Dr. Carlos Silva</div>
-                <p>Análise do desenvolvimento educacional na região do sertão pernambucano durante o século XX.</p>
-                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Ler Artigo</button>
+                <div class="acervo-meta">Artigo Científico • 2018</div>
+                <p>Análise do desenvolvimento educacional na região do sertão pernambucano.</p>
             </div>
-
             <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Sala de aula">
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sala de aula">
                 <h3>Metodologias de Ensino Rural</h3>
-                <div class="acervo-meta">Dissertação • 2015 • Maria Santos</div>
-                <p>Estudo sobre as práticas pedagógicas em escolas rurais de Petrolina nas décadas de 70-80.</p>
-                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Acessar</button>
+                <div class="acervo-meta">Dissertação • 2015</div>
+                <p>Estudo sobre práticas pedagógicas em escolas rurais de Petrolina.</p>
             </div>
-
             <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1581093458791-8a6c6bc30f4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Pesquisadores">
+                <img src="https://images.unsplash.com/photo-1581093458791-8a6c6bc30f4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Pesquisadores">
                 <h3>Banco de Pesquisadores</h3>
                 <div class="acervo-meta">Base de Dados • Atualizado 2024</div>
-                <p>Catálogo completo de pesquisadores e suas linhas de estudo sobre educação em Pernambuco.</p>
-                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Explorar</button>
+                <p>Catálogo de pesquisadores e suas linhas de estudo sobre educação.</p>
             </div>
         </div>
     </section>
 
-    <!-- MINHA ESCOLA MINHA HISTÓRIA -->
-    <section class="contribuicao-section" id="contribuir">
-        <h2 class="section-title">Minha Escola, Minha História</h2>
-        
-        <!-- GALERIA DE EXEMPLOS -->
-        <div class="galeria">
-            <div class="galeria-item">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Escola antiga">
-                <div class="galeria-overlay">
-                    <strong>EMAAF - 1985</strong><br>
-                    Formatura da primeira turma
-                </div>
+    <!-- PROFESSORES QUE FIZERAM HISTÓRIA -->
+    <section class="section" id="professores">
+        <h2 class="section-title">PROFESSORES QUE FIZERAM HISTÓRIA</h2>
+        <div class="professores-grid">
+            <div class="professor-card">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professor" class="professor-foto">
+                <h3>Prof. Carlos Albuquerque</h3>
+                <div class="professor-meta">EMAAF • 1975-2000</div>
+                <p>Pioneiro no ensino agrícola no sertão pernambucano.</p>
             </div>
-            <div class="galeria-item">
-                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Estudantes">
-                <div class="galeria-overlay">
-                    <strong>Alunos da EMAAF</strong><br>
-                    Turma de 1992 no pátio
-                </div>
+            <div class="professor-card">
+                <img src="https://images.unsplash.com/photo-1544717275-2b62e17adc91?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professora" class="professor-foto">
+                <h3>Profa. Maria dos Santos</h3>
+                <div class="professor-meta">Colégio Estadual • 1960-1990</div>
+                <p>Referência em educação inclusiva antes da legislação.</p>
             </div>
-            <div class="galeria-item">
-                <img src="https://images.unsplash.com/photo-1588072432836-4d8acc919018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Professores">
-                <div class="galeria-overlay">
-                    <strong>Corpo Docente</strong><br>
-                    Professores em 1988
-                </div>
+            <div class="professor-card">
+                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professor" class="professor-foto">
+                <h3>Prof. João Silva</h3>
+                <div class="professor-meta">Escola Técnica • 1980-2010</div>
+                <p>Desenvolveu métodos inovadores para ensino profissionalizante.</p>
             </div>
         </div>
-
-        <form class="form-contribuicao" id="formContribuicao">
-            <div class="form-group">
-                <label for="nome">Seu Nome</label>
-                <input type="text" id="nome" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Seu Email</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="escola">Nome da Escola</label>
-                <input type="text" id="escola" value="EMAAF - Escola Municipal Agrícola Américo Farias" required>
-            </div>
-            <div class="form-group">
-                <label for="decada">Década</label>
-                <select id="decada" required>
-                    <option value="">Selecione a década</option>
-                    <option value="70" selected>Década de 70</option>
-                    <option value="80">Década de 80</option>
-                    <option value="90">Década de 90</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="historia">Sua História</label>
-                <textarea id="historia" rows="5" placeholder="Compartilhe suas memórias, histórias e experiências dessa escola..." required>Lembro-me dos primeiros dias na EMAAF em 1978. A escola era nova, cercada pelo verde do sertão. Tínhamos aulas práticas de agricultura e as teorias sobre o solo do semiárido. O professor João, com sua paixão pelo ensino, nos mostrou que educação transforma vidas...</textarea>
-            </div>
-            <div class="form-group">
-                <label for="fotos">Enviar Fotos</label>
-                <input type="file" id="fotos" multiple accept="image/*">
-            </div>
-            <button type="submit" class="btn">Enviar Minha História</button>
-        </form>
     </section>
 
     <!-- TOUR VIRTUAL -->
-    <section class="tour-section" id="tour">
-        <h2 class="section-title">Tour Virtual - EMAAF Petrolina</h2>
+    <section class="section" id="tour">
+        <h2 class="section-title">TOUR VIRTUAL 360°</h2>
         <div class="tour-container">
-            <div class="tour-viewer" id="tourViewer">
-                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Entrada Principal - 1975"></div>
-                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Horta Escolar"></div>
-                <div class="tour-hotspot" style="top: 45%; left: 50%;" data-info="Sala de Aula Prática"></div>
-                <div style="text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                    <h3>🏫 EMAAF - Escola Municipal Agrícola Américo Farias</h3>
-                    <p>Clique nos pontos para explorar a escola</p>
-                </div>
-            </div>
-            <div class="tour-controls">
-                <button class="btn" onclick="mudarAmbiente('entrada')">Entrada</button>
-                <button class="btn" onclick="mudarAmbiente('sala')">Salas de Aula</button>
-                <button class="btn" onclick="mudarAmbiente('horta')">Área Agrícola</button>
+            <div class="tour-viewer">
+                <iframe class="tour-iframe" src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sCAoSLEFGMVFpcFBfSUdJbU1sT25nVzZvaWtqT19HLWlPcGNJN0g0TjJvNlJfUzJV!2m2!1d-9.3885!2d-40.5024!3f0!4f0!5f0.7820865974627469" allowfullscreen></iframe>
             </div>
         </div>
     </section>
 
-    <!-- BOTÃO ACESSIBILIDADE -->
-    <button class="acessibilidade" onclick="toggleContraste()" title="Alto Contraste">♿</button>
-
-    <!-- MODAL -->
-    <div class="modal" id="modalEscola">
-        <div class="modal-content">
-            <button class="close-modal" onclick="fecharModal()">×</button>
-            <h3 id="modalTitulo">EMAAF - Escola Municipal Agrícola Américo Farias</h3>
-            <div id="modalConteudo">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="EMAAF" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
-                <p><strong>Localização:</strong> Petrolina, Pernambuco</p>
-                <p><strong>Fundada em:</strong> 1975</p>
-                <p><strong>Década:</strong> 1970</p>
-                <p><strong>Histórico:</strong> A EMAAF foi pioneira no ensino agrícola no sertão pernambucano, formando gerações de técnicos agrícolas e promovendo o desenvolvimento sustentável da região.</p>
-                
-                <div style="margin-top: 1rem;">
-                    <h4>Conteúdo Disponível:</h4>
-                    <ul>
-                        <li>📸 Galeria de Fotos Históricas (1975-2000)</li>
-                        <li>🎥 Depoimentos de Ex-Alunos e Professores</li>
-                        <li>📚 Pesquisas sobre Educação Rural</li>
-                        <li>🕰️ Linha do Tempo da Escola</li>
-                        <li>🌱 Materiais sobre Agricultura no Semiárido</li>
-                        <li>🏛️ Tour Virtual 360°</li>
-                    </ul>
-                </div>
+    <!-- FORMULÁRIO SIMPLES -->
+    <section class="form-section" id="contribuir">
+        <h2 class="section-title">MINHA ESCOLA, MINHA HISTÓRIA</h2>
+        <form class="form-simple">
+            <div class="form-group">
+                <label for="nome">SEU NOME</label>
+                <input type="text" id="nome" required>
             </div>
-            <button class="btn" onclick="irParaPaginaEscola()" style="margin-top: 1rem;">Ver Página Completa da EMAAF</button>
+            <div class="form-group">
+                <label for="email">SEU EMAIL</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="escola">NOME DA ESCOLA</label>
+                <input type="text" id="escola" required>
+            </div>
+            <div class="form-group">
+                <label for="historia">SUA HISTÓRIA</label>
+                <textarea id="historia" rows="3" placeholder="Compartilhe suas memórias..." required></textarea>
+            </div>
+            <button type="submit" class="btn-form">ENVIAR MINHA HISTÓRIA</button>
+        </form>
+        <button class="btn-escola">QUERO MINHA ESCOLA NA HISTÓRIA</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="logo" style="color: white; margin-bottom: 2rem;">REDHEPE</div>
+            <div class="footer-links">
+                <a href="#mapa">Mapa</a>
+                <a href="#acervo">Acervo</a>
+                <a href="#professores">Professores</a>
+                <a href="#tour">Tour Virtual</a>
+                <a href="#contribuir">Contribuir</a>
+            </div>
+            <div class="copyright">
+                © 2024 Repositório Digital da História da Educação de Pernambuco. Todos os direitos reservados.
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // INICIALIZAÇÃO DO MAPA
+        // SLIDER AUTOMÁTICO
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        
+        setInterval(nextSlide, 5000);
+
+        // MAPA
         let map;
         let marcadores = [];
 
         function inicializarMapa() {
-            // Coordenadas de Petrolina
-            map = L.map('map').setView([-9.3885, -40.5024], 12);
+            map = L.map('map').setView([-8.063, -34.871], 7);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // DADOS DAS ESCOLAS (com EMAAF real)
+            // Escolas exemplo
             const escolas = [
-                {
-                    id: 1,
-                    nome: "EMAAF - Escola Municipal Agrícola Américo Farias",
-                    lat: -9.3885,
-                    lng: -40.5024,
-                    decada: "70",
-                    endereco: "Zona Rural, Petrolina - PE",
-                    descricao: "Pioneira no ensino agrícola do sertão pernambucano, fundada em 1975."
-                },
-                {
-                    id: 2,
-                    nome: "Colégio Estadual de Petrolina",
-                    lat: -9.3950,
-                    lng: -40.5080,
-                    decada: "60",
-                    endereco: "Centro, Petrolina - PE",
-                    descricao: "Uma das primeiras escolas estaduais da região."
-                },
-                {
-                    id: 3,
-                    nome: "Escola Técnica do Sertão",
-                    lat: -9.3820,
-                    lng: -40.4950,
-                    decada: "80",
-                    endereco: "Bairro São José, Petrolina - PE",
-                    descricao: "Referência em ensino profissionalizante no interior."
-                }
+                { nome: "EMAAF Petrolina", lat: -9.3885, lng: -40.5024, decada: "70" },
+                { nome: "Colégio Estadual Recife", lat: -8.063, lng: -34.871, decada: "60" },
+                { nome: "Ginásio Pernambucano", lat: -8.055, lng: -34.880, decada: "50" }
             ];
 
-            // ADICIONAR MARCADORES
             escolas.forEach(escola => {
                 const marcador = L.marker([escola.lat, escola.lng])
                     .addTo(map)
-                    .bindPopup(`
-                        <h3>${escola.nome}</h3>
-                        <p><strong>Década:</strong> ${escola.decada}</p>
-                        <p>${escola.descricao}</p>
-                        <button onclick="abrirModal(${escola.id})" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Ver Detalhes</button>
-                    `);
-
+                    .bindPopup(`<strong>${escola.nome}</strong><br>Década de ${escola.decada}`);
                 marcador.escola = escola;
                 marcadores.push(marcador);
             });
         }
 
-        // FILTRO POR DÉCADA
         function filtrarPorDecada(decada) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
             marcadores.forEach(marcador => {
                 if (decada === 'todos' || marcador.escola.decada === decada) {
                     map.addLayer(marcador);
@@ -762,137 +598,20 @@
             });
         }
 
-        // MODAL DA ESCOLA
-        function abrirModal(idEscola) {
-            const escolas = {
-                1: {
-                    titulo: "EMAAF - Escola Municipal Agrícola Américo Farias",
-                    conteudo: `
-                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="EMAAF" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
-                        <p><strong>Localização:</strong> Petrolina, Pernambuco</p>
-                        <p><strong>Fundada em:</strong> 1975</p>
-                        <p><strong>Década:</strong> 1970</p>
-                        <p><strong>Histórico:</strong> A EMAAF foi pioneira no ensino agrícola no sertão pernambucano, formando gerações de técnicos agrícolas e promovendo o desenvolvimento sustentável da região.</p>
-                        
-                        <div style="margin-top: 1rem;">
-                            <h4>Conteúdo Disponível:</h4>
-                            <ul>
-                                <li>📸 Galeria de Fotos Históricas (1975-2000)</li>
-                                <li>🎥 Depoimentos de Ex-Alunos e Professores</li>
-                                <li>📚 Pesquisas sobre Educação Rural</li>
-                                <li>🕰️ Linha do Tempo da Escola</li>
-                                <li>🌱 Materiais sobre Agricultura no Semiárido</li>
-                                <li>🏛️ Tour Virtual 360°</li>
-                            </ul>
-                        </div>
-                    `
-                },
-                2: {
-                    titulo: "Colégio Estadual de Petrolina",
-                    conteudo: "Informações do Colégio Estadual de Petrolina..."
-                },
-                3: {
-                    titulo: "Escola Técnica do Sertão", 
-                    conteudo: "Informações da Escola Técnica do Sertão..."
-                }
-            };
-
-            const escola = escolas[idEscola];
-            document.getElementById('modalTitulo').textContent = escola.titulo;
-            document.getElementById('modalConteudo').innerHTML = escola.conteudo;
-            document.getElementById('modalEscola').style.display = 'block';
-        }
-
-        function fecharModal() {
-            document.getElementById('modalEscola').style.display = 'none';
-        }
-
-        function irParaPaginaEscola() {
-            alert('Redirecionando para página completa da EMAAF...');
-            // window.location.href = `/escola/emaaf`;
-        }
-
-        // TOUR VIRTUAL
-        function mudarAmbiente(ambiente) {
-            const tourViewer = document.getElementById('tourViewer');
-            const ambientes = {
-                entrada: { 
-                    cor: '#8B4513', 
-                    texto: 'Entrada Principal - 1975',
-                    imagem: '🏫'
-                },
-                sala: { 
-                    cor: '#4682B4', 
-                    texto: 'Salas de Aula Práticas',
-                    imagem: '📚'
-                },
-                horta: { 
-                    cor: '#2E8B57', 
-                    texto: 'Horta Escolar Experimental',
-                    imagem: '🌱'
-                }
-            };
-
-            const ambienteInfo = ambientes[ambiente];
-            tourViewer.style.background = `linear-gradient(45deg, ${ambienteInfo.cor}, #ddd)`;
-            tourViewer.innerHTML = `
-                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="${ambienteInfo.texto}"></div>
-                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Clique para explorar"></div>
-                <div style="text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                    <h3 style="font-size: 2rem;">${ambienteInfo.imagem}</h3>
-                    <h3>${ambienteInfo.texto}</h3>
-                    <p>Clique nos pontos para explorar</p>
-                </div>
-            `;
-
-            // Adicionar eventos aos novos hotspots
-            document.querySelectorAll('.tour-hotspot').forEach(hotspot => {
-                hotspot.addEventListener('click', function() {
-                    const info = this.getAttribute('data-info');
-                    alert(`🏫 EMAAF - ${info}\n\n(No sistema real, isso mostraria fotos e informações detalhadas deste ambiente)`);
-                });
-            });
-        }
-
-        // FORMULÁRIO DE CONTRIBUIÇÃO
-        document.getElementById('formContribuicao').addEventListener('submit', function(e) {
+        // FORMULÁRIO
+        document.querySelector('.form-simple').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const formData = {
-                nome: document.getElementById('nome').value,
-                email: document.getElementById('email').value,
-                escola: document.getElementById('escola').value,
-                decada: document.getElementById('decada').value,
-                historia: document.getElementById('historia').value
-            };
-
-            // Simular envio
-            alert('Obrigado por compartilhar sua história da EMAAF! Sua contribuição será revisada e em breve estará no acervo.');
+            alert('Obrigado por contribuir com sua história! Entraremos em contato em breve.');
             this.reset();
         });
 
-        // ACESSIBILIDADE
-        function toggleContraste() {
-            document.body.classList.toggle('alto-contraste');
-        }
+        document.querySelector('.btn-escola').addEventListener('click', function() {
+            document.getElementById('contribuir').scrollIntoView({ behavior: 'smooth' });
+        });
 
         // INICIALIZAÇÃO
         document.addEventListener('DOMContentLoaded', function() {
             inicializarMapa();
-            mudarAmbiente('entrada');
-
-            // Animações de entrada
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
-                    }
-                });
-            });
-
-            document.querySelectorAll('.section-title, .form-contribuicao, .tour-container, .acervo-card').forEach(el => {
-                observer.observe(el);
-            });
         });
     </script>
 </body>
