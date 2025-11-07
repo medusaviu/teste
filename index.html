@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educação PE - Memória Viva</title>
+    <title>REDHEPE - Rede Digital da História da Educação de Pernambuco</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         /* VARIÁVEIS E RESET */
         :root {
@@ -12,11 +13,7 @@
             --accent: #F4A261;
             --light: #F8F9FA;
             --dark: #212529;
-            --decada-50: #8B4513;
-            --decada-60: #FF6B35;
-            --decada-70: #4682B4;
-            --decada-80: #32CD32;
-            --decada-90: #FFD700;
+            --text: #333;
         }
 
         * {
@@ -28,174 +25,293 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--light);
-            color: var(--dark);
+            color: var(--text);
             line-height: 1.6;
         }
 
         /* HEADER */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .logo {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
+            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .logo-icon {
-            font-size: 2rem;
-        }
-
-        /* TIMELINE DÉCADAS */
-        .timeline-nav {
-            background: white;
-            padding: 1rem 0;
-            border-bottom: 3px solid var(--accent);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .decadas {
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 8px;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+            color: white;
+            font-weight: bold;
         }
 
-        .decada-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            background: var(--light);
+        /* MENU */
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
             color: var(--dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a:hover::after {
+            width: 80%;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        /* MAPA SECTION */
+        .mapa-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        #map {
+            height: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease;
+        }
+
+        /* MINHA ESCOLA MINHA HISTÓRIA */
+        .contribuicao-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .form-contribuicao {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: slideUp 0.8s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(244, 162, 97, 0.1);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: bold;
-            border: 2px solid transparent;
+            display: inline-block;
         }
 
-        .decada-btn.active {
+        .btn:hover {
+            background: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .decada-btn[data-decada="50"] { border-color: var(--decada-50); color: var(--decada-50); }
-        .decada-btn[data-decada="60"] { border-color: var(--decada-60); color: var(--decada-60); }
-        .decada-btn[data-decada="70"] { border-color: var(--decada-70); color: var(--decada-70); }
-        .decada-btn[data-decada="80"] { border-color: var(--decada-80); color: var(--decada-80); }
-        .decada-btn[data-decada="90"] { border-color: var(--decada-90); color: var(--decada-90); }
-
-        /* CONTEÚDO PRINCIPAL */
-        .main-content {
-            padding: 2rem 0;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-        }
-
-        /* MAPA */
-        .mapa-container {
+        /* TOUR VIRTUAL */
+        .tour-section {
+            padding: 4rem 2rem;
             background: white;
-            border-radius: 10px;
-            padding: 1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            height: 500px;
         }
 
-        .mapa {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
-            border-radius: 8px;
+        .tour-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease;
+        }
+
+        .tour-viewer {
+            height: 400px;
+            background: linear-gradient(45deg, #ddd, #eee);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
-        .ponto-mapa {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-            transform: translate(-50%, -50%);
+        .tour-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: white;
         }
 
-        .ponto-mapa::after {
-            content: '';
+        .tour-hotspot {
             position: absolute;
             width: 20px;
             height: 20px;
-            border: 2px solid var(--accent);
+            background: var(--accent);
             border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            cursor: pointer;
             animation: pulse 2s infinite;
         }
 
+        .tour-hotspot::before {
+            content: '🔍';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
-        }
-
-        /* CARDS DE CONTEÚDO */
-        .conteudo-container {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .card-meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .card-img {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(45deg, #ddd, #eee);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 162, 97, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(244, 162, 97, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 162, 97, 0); }
         }
 
         /* ACESSIBILIDADE */
@@ -210,9 +326,14 @@
             width: 60px;
             height: 60px;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 1000;
             font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .acessibilidade:hover {
+            transform: scale(1.1);
         }
 
         .alto-contraste {
@@ -221,140 +342,336 @@
 
         /* RESPONSIVO */
         @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
             }
-            
-            .decadas {
-                gap: 0.5rem;
+
+            .nav-menu {
+                gap: 1rem;
             }
-            
-            .decada-btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
+
+            .hero h1 {
+                font-size: 2rem;
             }
+
+            #map {
+                height: 300px;
+            }
+        }
+
+        /* MODAL PARA ESCOLAS */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
         }
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <header>
-        <div class="container">
+        <div class="header-container">
             <div class="logo">
-                <span class="logo-icon">📚</span>
-                Educação PE - Memória Viva
+                <div class="logo-placeholder">R</div>
+                REDHEPE
             </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#mapa">Mapa das Escolas</a></li>
+                    <li><a href="#acervo">Acervo</a></li>
+                    <li><a href="#contribuir">Minha Escola</a></li>
+                    <li><a href="#tour">Tour Virtual</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <!-- TIMELINE DÉCADAS -->
-    <nav class="timeline-nav">
-        <div class="container">
-            <div class="decadas">
-                <button class="decada-btn active" data-decada="50">Década 50</button>
-                <button class="decada-btn" data-decada="60">Década 60</button>
-                <button class="decada-btn" data-decada="70">Década 70</button>
-                <button class="decada-btn" data-decada="80">Década 80</button>
-                <button class="decada-btn" data-decada="90">Década 90</button>
+    <!-- HERO SECTION -->
+    <section class="hero" id="inicio">
+        <h1>Rede Digital da História da Educação de Pernambuco</h1>
+        <p>Preservando a memória educacional e conectando gerações através das histórias das escolas pernambucanas</p>
+    </section>
+
+    <!-- MAPA INTERATIVO -->
+    <section class="mapa-section" id="mapa">
+        <h2 class="section-title">Mapa das Escolas Históricas</h2>
+        <div id="map"></div>
+        <div style="text-align: center;">
+            <button class="btn" onclick="filtrarPorDecada('60')">Década de 60</button>
+            <button class="btn" onclick="filtrarPorDecada('70')">Década de 70</button>
+            <button class="btn" onclick="filtrarPorDecada('80')">Década de 80</button>
+            <button class="btn" onclick="filtrarPorDecada('todos')">Todas as Décadas</button>
+        </div>
+    </section>
+
+    <!-- MINHA ESCOLA MINHA HISTÓRIA -->
+    <section class="contribuicao-section" id="contribuir">
+        <h2 class="section-title">Minha Escola, Minha História</h2>
+        <form class="form-contribuicao" id="formContribuicao">
+            <div class="form-group">
+                <label for="nome">Seu Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Seu Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="escola">Nome da Escola</label>
+                <input type="text" id="escola" required>
+            </div>
+            <div class="form-group">
+                <label for="decada">Década</label>
+                <select id="decada" required>
+                    <option value="">Selecione a década</option>
+                    <option value="50">Década de 50</option>
+                    <option value="60">Década de 60</option>
+                    <option value="70">Década de 70</option>
+                    <option value="80">Década de 80</option>
+                    <option value="90">Década de 90</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="historia">Sua História</label>
+                <textarea id="historia" rows="5" placeholder="Compartilhe suas memórias, histórias e experiências dessa escola..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="fotos">Enviar Fotos</label>
+                <input type="file" id="fotos" multiple accept="image/*">
+            </div>
+            <button type="submit" class="btn">Enviar Minha História</button>
+        </form>
+    </section>
+
+    <!-- TOUR VIRTUAL -->
+    <section class="tour-section" id="tour">
+        <h2 class="section-title">Tour Virtual - Colégio Estadual do Recife</h2>
+        <div class="tour-container">
+            <div class="tour-viewer" id="tourViewer">
+                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Entrada Principal - 1958"></div>
+                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Pátio Central"></div>
+                <div class="tour-hotspot" style="top: 45%; left: 50%;" data-info="Sala de Aula Anos 60"></div>
+                <div style="text-align: center; color: #666;">
+                    <h3>🎬 Tour Virtual 360°</h3>
+                    <p>Clique nos pontos para explorar a escola</p>
+                </div>
+            </div>
+            <div class="tour-controls">
+                <button class="btn" onclick="mudarAmbiente('entrada')">Entrada</button>
+                <button class="btn" onclick="mudarAmbiente('sala')">Sala de Aula</button>
+                <button class="btn" onclick="mudarAmbiente('biblioteca')">Biblioteca</button>
             </div>
         </div>
-    </nav>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-content">
-        <div class="container">
-            <div class="content-grid">
-                <!-- MAPA -->
-                <div class="mapa-container">
-                    <h3>Mapa das Escolas Históricas</h3>
-                    <div class="mapa" id="mapa">
-                        <div class="ponto-mapa" style="top: 30%; left: 40%;" data-escola="ginasio"></div>
-                        <div class="ponto-mapa" style="top: 60%; left: 60%;" data-escola="colegio"></div>
-                        <div class="ponto-mapa" style="top: 45%; left: 25%;" data-escola="tecnica"></div>
-                    </div>
-                </div>
-
-                <!-- CARDS DE CONTEÚDO -->
-                <div class="conteudo-container" id="conteudo">
-                    <div class="card">
-                        <div class="card-img">
-                            🏫 Imagem da Escola
-                        </div>
-                        <h3>Ginásio Pernambucano</h3>
-                        <div class="card-meta">Década de 50 • Recife • Matemática</div>
-                        <p>Uma das primeiras instituições de ensino secundário de Pernambuco, fundada em 1952.</p>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-img">
-                            📖 Livro Didático
-                        </div>
-                        <h3>Métodos de Ensino Anos 50</h3>
-                        <div class="card-meta">Pesquisa Acadêmica • História da Educação</div>
-                        <p>Análise dos materiais didáticos e metodologias utilizadas nas salas de aula da década de 50.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    </section>
 
     <!-- BOTÃO ACESSIBILIDADE -->
-    <button class="acessibilidade" onclick="toggleContraste()">♿</button>
+    <button class="acessibilidade" onclick="toggleContraste()" title="Alto Contraste">♿</button>
 
+    <!-- MODAL -->
+    <div class="modal" id="modalEscola">
+        <div class="modal-content">
+            <button class="close-modal" onclick="fecharModal()">×</button>
+            <h3 id="modalTitulo">Colégio Estadual do Recife</h3>
+            <div id="modalConteudo">
+                <p>Carregando informações da escola...</p>
+            </div>
+            <button class="btn" onclick="irParaPaginaEscola()">Ver Página Completa</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        // CONTROLE DAS DÉCADAS
-        const decadaBtns = document.querySelectorAll('.decada-btn');
-        const conteudoContainer = document.getElementById('conteudo');
-        const pontosMapa = document.querySelectorAll('.ponto-mapa');
+        // INICIALIZAÇÃO DO MAPA
+        let map;
+        let marcadores = [];
 
-        decadaBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active de todos
-                decadaBtns.forEach(b => b.classList.remove('active'));
-                // Adiciona active no clicado
-                btn.classList.add('active');
-                
-                const decada = btn.dataset.decada;
-                atualizarConteudo(decada);
+        function inicializarMapa() {
+            map = L.map('map').setView([-8.063, -34.871], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // DADOS DAS ESCOLAS (exemplo)
+            const escolas = [
+                {
+                    id: 1,
+                    nome: "Colégio Estadual do Recife",
+                    lat: -8.063,
+                    lng: -34.871,
+                    decada: "60",
+                    endereco: "Rua da Aurora, 123",
+                    descricao: "Fundado em 1962, uma das instituições mais tradicionais do estado."
+                },
+                {
+                    id: 2,
+                    nome: "Ginásio Pernambucano",
+                    lat: -8.055,
+                    lng: -34.880,
+                    decada: "50",
+                    endereco: "Av. Conde da Boa Vista, 456",
+                    descricao: "Primeira escola de ensino secundário da capital."
+                },
+                {
+                    id: 3,
+                    nome: "Escola Técnica Estadual",
+                    lat: -8.072,
+                    lng: -34.892,
+                    decada: "70",
+                    endereco: "Rua do Sol, 789",
+                    descricao: "Pioneira no ensino profissionalizante em Pernambuco."
+                }
+            ];
+
+            // ADICIONAR MARCADORES
+            escolas.forEach(escola => {
+                const marcador = L.marker([escola.lat, escola.lng])
+                    .addTo(map)
+                    .bindPopup(`
+                        <h3>${escola.nome}</h3>
+                        <p><strong>Década:</strong> ${escola.decada}</p>
+                        <p>${escola.descricao}</p>
+                        <button onclick="abrirModal(${escola.id})" style="background: var(--accent); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Ver Detalhes</button>
+                    `);
+
+                marcador.escola = escola;
+                marcadores.push(marcador);
             });
-        });
-
-        function atualizarConteudo(decada) {
-            const conteudos = {
-                '50': [
-                    { titulo: 'Ginásio Pernambucano', tipo: 'Escola', local: 'Recife', descricao: 'Instituição pioneira do ensino secundário em PE.' },
-                    { titulo: 'Primeiras Cartilhas', tipo: 'Material', local: 'Estado', descricao: 'Métodos de alfabetização da época.' }
-                ],
-                '60': [
-                    { titulo: 'Movimento Estudantil', tipo: 'Evento', local: 'Recife', descricao: 'Protagonismo juvenil na educação.' },
-                    { titulo: 'Escolas Técnicas', tipo: 'Escola', local: 'Estado', descricao: 'Expansão do ensino profissionalizante.' }
-                ],
-                '70': [
-                    { titulo: 'Reformas Educacionais', tipo: 'Pesquisa', local: 'Estado', descricao: 'Mudanças no sistema de ensino.' },
-                    { titulo: 'Universidades Públicas', tipo: 'Instituição', local: 'Recife', descricao: 'Criação de novos campi.' }
-                ]
-            };
-
-            const conteudoDecada = conteudos[decada] || conteudos['50'];
-            
-            conteudoContainer.innerHTML = conteudoDecada.map(item => `
-                <div class="card">
-                    <div class="card-img">
-                        ${item.tipo === 'Escola' ? '🏫' : item.tipo === 'Material' ? '📖' : '🎓'} ${item.tipo}
-                    </div>
-                    <h3>${item.titulo}</h3>
-                    <div class="card-meta">Década de ${decada} • ${item.local} • ${item.tipo}</div>
-                    <p>${item.descricao}</p>
-                </div>
-            `).join('');
         }
 
-        // INTERAÇÃO COM MAPA
-        pontosMapa.forEach(ponto => {
-            ponto.addEventListener('click', () => {
-                const escola = ponto.dataset.escola;
-                alert(`Informações da escola: ${escola}\n(Em desenvolvimento)`);
+        // FILTRO POR DÉCADA
+        function filtrarPorDecada(decada) {
+            marcadores.forEach(marcador => {
+                if (decada === 'todos' || marcador.escola.decada === decada) {
+                    map.addLayer(marcador);
+                } else {
+                    map.removeLayer(marcador);
+                }
             });
+        }
+
+        // MODAL DA ESCOLA
+        function abrirModal(idEscola) {
+            const escolas = {
+                1: {
+                    titulo: "Colégio Estadual do Recife",
+                    conteudo: `
+                        <p><strong>Década:</strong> 1960</p>
+                        <p><strong>Endereço:</strong> Rua da Aurora, 123 - Recife</p>
+                        <p><strong>Histórico:</strong> Fundado em 1962, formou gerações de pernambucanos e foi palco de importantes movimentos estudantis.</p>
+                        <div style="margin-top: 1rem;">
+                            <h4>Conteúdo Disponível:</h4>
+                            <ul>
+                                <li>📸 Galeria de Fotos Históricas</li>
+                                <li>🎥 Depoimentos em Vídeo</li>
+                                <li>📚 Pesquisas Relacionadas</li>
+                                <li>🕰️ Linha do Tempo</li>
+                                <li>🏛️ Tour Virtual 360°</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                2: {
+                    titulo: "Ginásio Pernambucano",
+                    conteudo: "Informações do Ginásio Pernambucano..."
+                },
+                3: {
+                    titulo: "Escola Técnica Estadual", 
+                    conteudo: "Informações da Escola Técnica..."
+                }
+            };
+
+            const escola = escolas[idEscola];
+            document.getElementById('modalTitulo').textContent = escola.titulo;
+            document.getElementById('modalConteudo').innerHTML = escola.conteudo;
+            document.getElementById('modalEscola').style.display = 'block';
+        }
+
+        function fecharModal() {
+            document.getElementById('modalEscola').style.display = 'none';
+        }
+
+        function irParaPaginaEscola() {
+            alert('Redirecionando para página completa da escola...');
+            // window.location.href = `/escola/${id}`;
+        }
+
+        // TOUR VIRTUAL
+        function mudarAmbiente(ambiente) {
+            const tourViewer = document.getElementById('tourViewer');
+            const ambientes = {
+                entrada: { cor: '#8B4513', texto: 'Entrada Principal - Anos 60' },
+                sala: { cor: '#4682B4', texto: 'Sala de Aula Tradicional' },
+                biblioteca: { cor: '#2E8B57', texto: 'Biblioteca Histórica' }
+            };
+
+            const ambienteInfo = ambientes[ambiente];
+            tourViewer.style.background = `linear-gradient(45deg, ${ambienteInfo.cor}, #ddd)`;
+            tourViewer.innerHTML = `
+                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Ponto 1"></div>
+                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Ponto 2"></div>
+                <div style="text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                    <h3>${ambienteInfo.texto}</h3>
+                    <p>Clique nos pontos para explorar</p>
+                </div>
+            `;
+
+            // Adicionar eventos aos novos hotspots
+            document.querySelectorAll('.tour-hotspot').forEach(hotspot => {
+                hotspot.addEventListener('click', function() {
+                    const info = this.getAttribute('data-info');
+                    alert(`Informação: ${info}\n\n(No sistema real, isso abriria um modal com detalhes específicos)`);
+                });
+            });
+        }
+
+        // FORMULÁRIO DE CONTRIBUIÇÃO
+        document.getElementById('formContribuicao').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                escola: document.getElementById('escola').value,
+                decada: document.getElementById('decada').value,
+                historia: document.getElementById('historia').value
+            };
+
+            // Simular envio
+            alert('Obrigado por compartilhar sua história! Sua contribuição será revisada e em breve estará no acervo.');
+            this.reset();
         });
 
         // ACESSIBILIDADE
@@ -363,7 +680,23 @@
         }
 
         // INICIALIZAÇÃO
-        atualizarConteudo('50');
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarMapa();
+            mudarAmbiente('entrada');
+
+            // Animações de entrada
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.section-title, .form-contribuicao, .tour-container').forEach(el => {
+                observer.observe(el);
+            });
+        });
     </script>
 </body>
 </html>
