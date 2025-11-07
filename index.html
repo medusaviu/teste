@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educação PE - Memória Viva</title>
+    <style>
+        /* VARIÁVEIS E RESET */
+        :root {
+            --primary: #2C5530;
+            --secondary: #6B8E23;
+            --accent: #F4A261;
+            --light: #F8F9FA;
+            --dark: #212529;
+            --decada-50: #8B4513;
+            --decada-60: #FF6B35;
+            --decada-70: #4682B4;
+            --decada-80: #32CD32;
+            --decada-90: #FFD700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        /* TIMELINE DÉCADAS */
+        .timeline-nav {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .decadas {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .decada-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            border: 2px solid transparent;
+        }
+
+        .decada-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .decada-btn[data-decada="50"] { border-color: var(--decada-50); color: var(--decada-50); }
+        .decada-btn[data-decada="60"] { border-color: var(--decada-60); color: var(--decada-60); }
+        .decada-btn[data-decada="70"] { border-color: var(--decada-70); color: var(--decada-70); }
+        .decada-btn[data-decada="80"] { border-color: var(--decada-80); color: var(--decada-80); }
+        .decada-btn[data-decada="90"] { border-color: var(--decada-90); color: var(--decada-90); }
+
+        /* CONTEÚDO PRINCIPAL */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        /* MAPA */
+        .mapa-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: 500px;
+        }
+
+        .mapa {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ponto-mapa {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+        }
+
+        .ponto-mapa::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        /* CARDS DE CONTEÚDO */
+        .conteudo-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #ddd, #eee);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        /* ACESSIBILIDADE */
+        .acessibilidade {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 1000;
+            font-size: 1.5rem;
+        }
+
+        .alto-contraste {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .decadas {
+                gap: 0.5rem;
+            }
+            
+            .decada-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                Educação PE - Memória Viva
+            </div>
+        </div>
+    </header>
+
+    <!-- TIMELINE DÉCADAS -->
+    <nav class="timeline-nav">
+        <div class="container">
+            <div class="decadas">
+                <button class="decada-btn active" data-decada="50">Década 50</button>
+                <button class="decada-btn" data-decada="60">Década 60</button>
+                <button class="decada-btn" data-decada="70">Década 70</button>
+                <button class="decada-btn" data-decada="80">Década 80</button>
+                <button class="decada-btn" data-decada="90">Década 90</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- MAPA -->
+                <div class="mapa-container">
+                    <h3>Mapa das Escolas Históricas</h3>
+                    <div class="mapa" id="mapa">
+                        <div class="ponto-mapa" style="top: 30%; left: 40%;" data-escola="ginasio"></div>
+                        <div class="ponto-mapa" style="top: 60%; left: 60%;" data-escola="colegio"></div>
+                        <div class="ponto-mapa" style="top: 45%; left: 25%;" data-escola="tecnica"></div>
+                    </div>
+                </div>
+
+                <!-- CARDS DE CONTEÚDO -->
+                <div class="conteudo-container" id="conteudo">
+                    <div class="card">
+                        <div class="card-img">
+                            🏫 Imagem da Escola
+                        </div>
+                        <h3>Ginásio Pernambucano</h3>
+                        <div class="card-meta">Década de 50 • Recife • Matemática</div>
+                        <p>Uma das primeiras instituições de ensino secundário de Pernambuco, fundada em 1952.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-img">
+                            📖 Livro Didático
+                        </div>
+                        <h3>Métodos de Ensino Anos 50</h3>
+                        <div class="card-meta">Pesquisa Acadêmica • História da Educação</div>
+                        <p>Análise dos materiais didáticos e metodologias utilizadas nas salas de aula da década de 50.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTÃO ACESSIBILIDADE -->
+    <button class="acessibilidade" onclick="toggleContraste()">♿</button>
+
+    <script>
+        // CONTROLE DAS DÉCADAS
+        const decadaBtns = document.querySelectorAll('.decada-btn');
+        const conteudoContainer = document.getElementById('conteudo');
+        const pontosMapa = document.querySelectorAll('.ponto-mapa');
+
+        decadaBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active de todos
+                decadaBtns.forEach(b => b.classList.remove('active'));
+                // Adiciona active no clicado
+                btn.classList.add('active');
+                
+                const decada = btn.dataset.decada;
+                atualizarConteudo(decada);
+            });
+        });
+
+        function atualizarConteudo(decada) {
+            const conteudos = {
+                '50': [
+                    { titulo: 'Ginásio Pernambucano', tipo: 'Escola', local: 'Recife', descricao: 'Instituição pioneira do ensino secundário em PE.' },
+                    { titulo: 'Primeiras Cartilhas', tipo: 'Material', local: 'Estado', descricao: 'Métodos de alfabetização da época.' }
+                ],
+                '60': [
+                    { titulo: 'Movimento Estudantil', tipo: 'Evento', local: 'Recife', descricao: 'Protagonismo juvenil na educação.' },
+                    { titulo: 'Escolas Técnicas', tipo: 'Escola', local: 'Estado', descricao: 'Expansão do ensino profissionalizante.' }
+                ],
+                '70': [
+                    { titulo: 'Reformas Educacionais', tipo: 'Pesquisa', local: 'Estado', descricao: 'Mudanças no sistema de ensino.' },
+                    { titulo: 'Universidades Públicas', tipo: 'Instituição', local: 'Recife', descricao: 'Criação de novos campi.' }
+                ]
+            };
+
+            const conteudoDecada = conteudos[decada] || conteudos['50'];
+            
+            conteudoContainer.innerHTML = conteudoDecada.map(item => `
+                <div class="card">
+                    <div class="card-img">
+                        ${item.tipo === 'Escola' ? '🏫' : item.tipo === 'Material' ? '📖' : '🎓'} ${item.tipo}
+                    </div>
+                    <h3>${item.titulo}</h3>
+                    <div class="card-meta">Década de ${decada} • ${item.local} • ${item.tipo}</div>
+                    <p>${item.descricao}</p>
+                </div>
+            `).join('');
+        }
+
+        // INTERAÇÃO COM MAPA
+        pontosMapa.forEach(ponto => {
+            ponto.addEventListener('click', () => {
+                const escola = ponto.dataset.escola;
+                alert(`Informações da escola: ${escola}\n(Em desenvolvimento)`);
+            });
+        });
+
+        // ACESSIBILIDADE
+        function toggleContraste() {
+            document.body.classList.toggle('alto-contraste');
+        }
+
+        // INICIALIZAÇÃO
+        atualizarConteudo('50');
+    </script>
+</body>
+</html>
