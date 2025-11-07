@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-9">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REDHEPE - Rede Digital da História da Educação de Pernambuco</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
@@ -113,6 +113,24 @@
             color: white;
             padding: 4rem 2rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=2064&q=80') center/cover;
+            opacity: 0.2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
@@ -227,6 +245,93 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
+        /* GALERIA */
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .galeria-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .galeria-item:hover {
+            transform: scale(1.05);
+        }
+
+        .galeria-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .galeria-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .galeria-item:hover .galeria-overlay {
+            transform: translateY(0);
+        }
+
+        /* ACERVO SECTION */
+        .acervo-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .acervo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .acervo-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .acervo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .acervo-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .acervo-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .acervo-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
         /* TOUR VIRTUAL */
         .tour-section {
             padding: 4rem 2rem;
@@ -245,7 +350,7 @@
 
         .tour-viewer {
             height: 400px;
-            background: linear-gradient(45deg, #ddd, #eee);
+            background: linear-gradient(45deg, #8B4513, #A0522D);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -381,8 +486,10 @@
             background: white;
             padding: 2rem;
             border-radius: 15px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
             animation: slideUp 0.3s ease;
         }
 
@@ -420,8 +527,10 @@
 
     <!-- HERO SECTION -->
     <section class="hero" id="inicio">
-        <h1>Rede Digital da História da Educação de Pernambuco</h1>
-        <p>Preservando a memória educacional e conectando gerações através das histórias das escolas pernambucanas</p>
+        <div class="hero-content">
+            <h1>Rede Digital da História da Educação de Pernambuco</h1>
+            <p>Preservando a memória educacional e conectando gerações através das histórias das escolas pernambucanas</p>
+        </div>
     </section>
 
     <!-- MAPA INTERATIVO -->
@@ -429,16 +538,72 @@
         <h2 class="section-title">Mapa das Escolas Históricas</h2>
         <div id="map"></div>
         <div style="text-align: center;">
-            <button class="btn" onclick="filtrarPorDecada('60')">Década de 60</button>
             <button class="btn" onclick="filtrarPorDecada('70')">Década de 70</button>
             <button class="btn" onclick="filtrarPorDecada('80')">Década de 80</button>
+            <button class="btn" onclick="filtrarPorDecada('90')">Década de 90</button>
             <button class="btn" onclick="filtrarPorDecada('todos')">Todas as Décadas</button>
+        </div>
+    </section>
+
+    <!-- ACERVO -->
+    <section class="acervo-section" id="acervo">
+        <h2 class="section-title">Acervo Digital</h2>
+        <div class="acervo-grid">
+            <div class="acervo-card">
+                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Livro antigo">
+                <h3>História da Educação no Sertão</h3>
+                <div class="acervo-meta">Artigo Científico • 2018 • Dr. Carlos Silva</div>
+                <p>Análise do desenvolvimento educacional na região do sertão pernambucano durante o século XX.</p>
+                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Ler Artigo</button>
+            </div>
+
+            <div class="acervo-card">
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Sala de aula">
+                <h3>Metodologias de Ensino Rural</h3>
+                <div class="acervo-meta">Dissertação • 2015 • Maria Santos</div>
+                <p>Estudo sobre as práticas pedagógicas em escolas rurais de Petrolina nas décadas de 70-80.</p>
+                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Acessar</button>
+            </div>
+
+            <div class="acervo-card">
+                <img src="https://images.unsplash.com/photo-1581093458791-8a6c6bc30f4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Pesquisadores">
+                <h3>Banco de Pesquisadores</h3>
+                <div class="acervo-meta">Base de Dados • Atualizado 2024</div>
+                <p>Catálogo completo de pesquisadores e suas linhas de estudo sobre educação em Pernambuco.</p>
+                <button class="btn" style="margin-top: 1rem; padding: 0.5rem 1rem;">Explorar</button>
+            </div>
         </div>
     </section>
 
     <!-- MINHA ESCOLA MINHA HISTÓRIA -->
     <section class="contribuicao-section" id="contribuir">
         <h2 class="section-title">Minha Escola, Minha História</h2>
+        
+        <!-- GALERIA DE EXEMPLOS -->
+        <div class="galeria">
+            <div class="galeria-item">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Escola antiga">
+                <div class="galeria-overlay">
+                    <strong>EMAAF - 1985</strong><br>
+                    Formatura da primeira turma
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Estudantes">
+                <div class="galeria-overlay">
+                    <strong>Alunos da EMAAF</strong><br>
+                    Turma de 1992 no pátio
+                </div>
+            </div>
+            <div class="galeria-item">
+                <img src="https://images.unsplash.com/photo-1588072432836-4d8acc919018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Professores">
+                <div class="galeria-overlay">
+                    <strong>Corpo Docente</strong><br>
+                    Professores em 1988
+                </div>
+            </div>
+        </div>
+
         <form class="form-contribuicao" id="formContribuicao">
             <div class="form-group">
                 <label for="nome">Seu Nome</label>
@@ -450,22 +615,20 @@
             </div>
             <div class="form-group">
                 <label for="escola">Nome da Escola</label>
-                <input type="text" id="escola" required>
+                <input type="text" id="escola" value="EMAAF - Escola Municipal Agrícola Américo Farias" required>
             </div>
             <div class="form-group">
                 <label for="decada">Década</label>
                 <select id="decada" required>
                     <option value="">Selecione a década</option>
-                    <option value="50">Década de 50</option>
-                    <option value="60">Década de 60</option>
-                    <option value="70">Década de 70</option>
+                    <option value="70" selected>Década de 70</option>
                     <option value="80">Década de 80</option>
                     <option value="90">Década de 90</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="historia">Sua História</label>
-                <textarea id="historia" rows="5" placeholder="Compartilhe suas memórias, histórias e experiências dessa escola..." required></textarea>
+                <textarea id="historia" rows="5" placeholder="Compartilhe suas memórias, histórias e experiências dessa escola..." required>Lembro-me dos primeiros dias na EMAAF em 1978. A escola era nova, cercada pelo verde do sertão. Tínhamos aulas práticas de agricultura e as teorias sobre o solo do semiárido. O professor João, com sua paixão pelo ensino, nos mostrou que educação transforma vidas...</textarea>
             </div>
             <div class="form-group">
                 <label for="fotos">Enviar Fotos</label>
@@ -477,21 +640,21 @@
 
     <!-- TOUR VIRTUAL -->
     <section class="tour-section" id="tour">
-        <h2 class="section-title">Tour Virtual - Colégio Estadual do Recife</h2>
+        <h2 class="section-title">Tour Virtual - EMAAF Petrolina</h2>
         <div class="tour-container">
             <div class="tour-viewer" id="tourViewer">
-                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Entrada Principal - 1958"></div>
-                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Pátio Central"></div>
-                <div class="tour-hotspot" style="top: 45%; left: 50%;" data-info="Sala de Aula Anos 60"></div>
-                <div style="text-align: center; color: #666;">
-                    <h3>🎬 Tour Virtual 360°</h3>
+                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Entrada Principal - 1975"></div>
+                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Horta Escolar"></div>
+                <div class="tour-hotspot" style="top: 45%; left: 50%;" data-info="Sala de Aula Prática"></div>
+                <div style="text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                    <h3>🏫 EMAAF - Escola Municipal Agrícola Américo Farias</h3>
                     <p>Clique nos pontos para explorar a escola</p>
                 </div>
             </div>
             <div class="tour-controls">
                 <button class="btn" onclick="mudarAmbiente('entrada')">Entrada</button>
-                <button class="btn" onclick="mudarAmbiente('sala')">Sala de Aula</button>
-                <button class="btn" onclick="mudarAmbiente('biblioteca')">Biblioteca</button>
+                <button class="btn" onclick="mudarAmbiente('sala')">Salas de Aula</button>
+                <button class="btn" onclick="mudarAmbiente('horta')">Área Agrícola</button>
             </div>
         </div>
     </section>
@@ -503,11 +666,27 @@
     <div class="modal" id="modalEscola">
         <div class="modal-content">
             <button class="close-modal" onclick="fecharModal()">×</button>
-            <h3 id="modalTitulo">Colégio Estadual do Recife</h3>
+            <h3 id="modalTitulo">EMAAF - Escola Municipal Agrícola Américo Farias</h3>
             <div id="modalConteudo">
-                <p>Carregando informações da escola...</p>
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="EMAAF" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                <p><strong>Localização:</strong> Petrolina, Pernambuco</p>
+                <p><strong>Fundada em:</strong> 1975</p>
+                <p><strong>Década:</strong> 1970</p>
+                <p><strong>Histórico:</strong> A EMAAF foi pioneira no ensino agrícola no sertão pernambucano, formando gerações de técnicos agrícolas e promovendo o desenvolvimento sustentável da região.</p>
+                
+                <div style="margin-top: 1rem;">
+                    <h4>Conteúdo Disponível:</h4>
+                    <ul>
+                        <li>📸 Galeria de Fotos Históricas (1975-2000)</li>
+                        <li>🎥 Depoimentos de Ex-Alunos e Professores</li>
+                        <li>📚 Pesquisas sobre Educação Rural</li>
+                        <li>🕰️ Linha do Tempo da Escola</li>
+                        <li>🌱 Materiais sobre Agricultura no Semiárido</li>
+                        <li>🏛️ Tour Virtual 360°</li>
+                    </ul>
+                </div>
             </div>
-            <button class="btn" onclick="irParaPaginaEscola()">Ver Página Completa</button>
+            <button class="btn" onclick="irParaPaginaEscola()" style="margin-top: 1rem;">Ver Página Completa da EMAAF</button>
         </div>
     </div>
 
@@ -518,40 +697,41 @@
         let marcadores = [];
 
         function inicializarMapa() {
-            map = L.map('map').setView([-8.063, -34.871], 12);
+            // Coordenadas de Petrolina
+            map = L.map('map').setView([-9.3885, -40.5024], 12);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // DADOS DAS ESCOLAS (exemplo)
+            // DADOS DAS ESCOLAS (com EMAAF real)
             const escolas = [
                 {
                     id: 1,
-                    nome: "Colégio Estadual do Recife",
-                    lat: -8.063,
-                    lng: -34.871,
-                    decada: "60",
-                    endereco: "Rua da Aurora, 123",
-                    descricao: "Fundado em 1962, uma das instituições mais tradicionais do estado."
+                    nome: "EMAAF - Escola Municipal Agrícola Américo Farias",
+                    lat: -9.3885,
+                    lng: -40.5024,
+                    decada: "70",
+                    endereco: "Zona Rural, Petrolina - PE",
+                    descricao: "Pioneira no ensino agrícola do sertão pernambucano, fundada em 1975."
                 },
                 {
                     id: 2,
-                    nome: "Ginásio Pernambucano",
-                    lat: -8.055,
-                    lng: -34.880,
-                    decada: "50",
-                    endereco: "Av. Conde da Boa Vista, 456",
-                    descricao: "Primeira escola de ensino secundário da capital."
+                    nome: "Colégio Estadual de Petrolina",
+                    lat: -9.3950,
+                    lng: -40.5080,
+                    decada: "60",
+                    endereco: "Centro, Petrolina - PE",
+                    descricao: "Uma das primeiras escolas estaduais da região."
                 },
                 {
                     id: 3,
-                    nome: "Escola Técnica Estadual",
-                    lat: -8.072,
-                    lng: -34.892,
-                    decada: "70",
-                    endereco: "Rua do Sol, 789",
-                    descricao: "Pioneira no ensino profissionalizante em Pernambuco."
+                    nome: "Escola Técnica do Sertão",
+                    lat: -9.3820,
+                    lng: -40.4950,
+                    decada: "80",
+                    endereco: "Bairro São José, Petrolina - PE",
+                    descricao: "Referência em ensino profissionalizante no interior."
                 }
             ];
 
@@ -586,30 +766,34 @@
         function abrirModal(idEscola) {
             const escolas = {
                 1: {
-                    titulo: "Colégio Estadual do Recife",
+                    titulo: "EMAAF - Escola Municipal Agrícola Américo Farias",
                     conteudo: `
-                        <p><strong>Década:</strong> 1960</p>
-                        <p><strong>Endereço:</strong> Rua da Aurora, 123 - Recife</p>
-                        <p><strong>Histórico:</strong> Fundado em 1962, formou gerações de pernambucanos e foi palco de importantes movimentos estudantis.</p>
+                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="EMAAF" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                        <p><strong>Localização:</strong> Petrolina, Pernambuco</p>
+                        <p><strong>Fundada em:</strong> 1975</p>
+                        <p><strong>Década:</strong> 1970</p>
+                        <p><strong>Histórico:</strong> A EMAAF foi pioneira no ensino agrícola no sertão pernambucano, formando gerações de técnicos agrícolas e promovendo o desenvolvimento sustentável da região.</p>
+                        
                         <div style="margin-top: 1rem;">
                             <h4>Conteúdo Disponível:</h4>
                             <ul>
-                                <li>📸 Galeria de Fotos Históricas</li>
-                                <li>🎥 Depoimentos em Vídeo</li>
-                                <li>📚 Pesquisas Relacionadas</li>
-                                <li>🕰️ Linha do Tempo</li>
+                                <li>📸 Galeria de Fotos Históricas (1975-2000)</li>
+                                <li>🎥 Depoimentos de Ex-Alunos e Professores</li>
+                                <li>📚 Pesquisas sobre Educação Rural</li>
+                                <li>🕰️ Linha do Tempo da Escola</li>
+                                <li>🌱 Materiais sobre Agricultura no Semiárido</li>
                                 <li>🏛️ Tour Virtual 360°</li>
                             </ul>
                         </div>
                     `
                 },
                 2: {
-                    titulo: "Ginásio Pernambucano",
-                    conteudo: "Informações do Ginásio Pernambucano..."
+                    titulo: "Colégio Estadual de Petrolina",
+                    conteudo: "Informações do Colégio Estadual de Petrolina..."
                 },
                 3: {
-                    titulo: "Escola Técnica Estadual", 
-                    conteudo: "Informações da Escola Técnica..."
+                    titulo: "Escola Técnica do Sertão", 
+                    conteudo: "Informações da Escola Técnica do Sertão..."
                 }
             };
 
@@ -624,25 +808,38 @@
         }
 
         function irParaPaginaEscola() {
-            alert('Redirecionando para página completa da escola...');
-            // window.location.href = `/escola/${id}`;
+            alert('Redirecionando para página completa da EMAAF...');
+            // window.location.href = `/escola/emaaf`;
         }
 
         // TOUR VIRTUAL
         function mudarAmbiente(ambiente) {
             const tourViewer = document.getElementById('tourViewer');
             const ambientes = {
-                entrada: { cor: '#8B4513', texto: 'Entrada Principal - Anos 60' },
-                sala: { cor: '#4682B4', texto: 'Sala de Aula Tradicional' },
-                biblioteca: { cor: '#2E8B57', texto: 'Biblioteca Histórica' }
+                entrada: { 
+                    cor: '#8B4513', 
+                    texto: 'Entrada Principal - 1975',
+                    imagem: '🏫'
+                },
+                sala: { 
+                    cor: '#4682B4', 
+                    texto: 'Salas de Aula Práticas',
+                    imagem: '📚'
+                },
+                horta: { 
+                    cor: '#2E8B57', 
+                    texto: 'Horta Escolar Experimental',
+                    imagem: '🌱'
+                }
             };
 
             const ambienteInfo = ambientes[ambiente];
             tourViewer.style.background = `linear-gradient(45deg, ${ambienteInfo.cor}, #ddd)`;
             tourViewer.innerHTML = `
-                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="Ponto 1"></div>
-                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Ponto 2"></div>
+                <div class="tour-hotspot" style="top: 30%; left: 25%;" data-info="${ambienteInfo.texto}"></div>
+                <div class="tour-hotspot" style="top: 60%; left: 75%;" data-info="Clique para explorar"></div>
                 <div style="text-align: center; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                    <h3 style="font-size: 2rem;">${ambienteInfo.imagem}</h3>
                     <h3>${ambienteInfo.texto}</h3>
                     <p>Clique nos pontos para explorar</p>
                 </div>
@@ -652,7 +849,7 @@
             document.querySelectorAll('.tour-hotspot').forEach(hotspot => {
                 hotspot.addEventListener('click', function() {
                     const info = this.getAttribute('data-info');
-                    alert(`Informação: ${info}\n\n(No sistema real, isso abriria um modal com detalhes específicos)`);
+                    alert(`🏫 EMAAF - ${info}\n\n(No sistema real, isso mostraria fotos e informações detalhadas deste ambiente)`);
                 });
             });
         }
@@ -670,7 +867,7 @@
             };
 
             // Simular envio
-            alert('Obrigado por compartilhar sua história! Sua contribuição será revisada e em breve estará no acervo.');
+            alert('Obrigado por compartilhar sua história da EMAAF! Sua contribuição será revisada e em breve estará no acervo.');
             this.reset();
         });
 
@@ -693,7 +890,7 @@
                 });
             });
 
-            document.querySelectorAll('.section-title, .form-contribuicao, .tour-container').forEach(el => {
+            document.querySelectorAll('.section-title, .form-contribuicao, .tour-container, .acervo-card').forEach(el => {
                 observer.observe(el);
             });
         });
