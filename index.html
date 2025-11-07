@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repositório Digital da História da Educação de Pernambuco</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <title>REDHEPE</title>
     <style>
         /* VARIÁVEIS E RESET */
         :root {
-            --primary: #2C5530;
-            --secondary: #6B8E23;
-            --accent: #F4A261;
-            --light: #F8F9FA;
-            --dark: #212529;
-            --text: #333;
-            --gray: #6c757d;
+            --primary: #000000;
+            --secondary: #ffffff;
+            --accent: #ff0000;
+            --gray: #888888;
         }
 
         * {
@@ -24,594 +20,404 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: white;
-            color: var(--text);
-            line-height: 1.6;
+            font-family: 'Arial', sans-serif;
+            background: var(--primary);
+            color: var(--secondary);
+            overflow-x: hidden;
         }
 
-        /* HEADER MINIMALISTA */
-        header {
-            background: white;
-            padding: 1.5rem 2rem;
+        /* CONTAINER PRINCIPAL COM EFEITO DE SCROLL */
+        .main-container {
+            position: relative;
+        }
+
+        /* CAMADAS DE CORES */
+        .color-layer {
             position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: var(--dark);
-            letter-spacing: 2px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--gray);
-            font-weight: 400;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .nav-menu a:hover {
-            color: var(--primary);
-        }
-
-        /* HERO SECTION COM SLIDER */
-        .hero {
-            margin-top: 80px;
-            height: 70vh;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slider {
-            height: 100%;
-            position: relative;
-        }
-
-        .slide {
-            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -1;
             opacity: 0;
-            transition: opacity 1s ease;
-            background-size: cover;
-            background-position: center;
+            transition: opacity 0.8s ease;
         }
 
-        .slide.active {
-            opacity: 1;
+        .layer-1 { background: #000000; }
+        .layer-2 { background: #ff0000; }
+        .layer-3 { background: #0000ff; }
+        .layer-4 { background: #00ff00; }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            z-index: 1000;
+            background: transparent;
         }
 
-        .slide-1 { background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
-        .slide-2 { background-image: url('https://images.unsplash.com/photo-1588072432836-4d8acc919018?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
-        .slide-3 { background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); }
-
-        .hero-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: white;
-            z-index: 2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 300;
-            margin-bottom: 1rem;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
             letter-spacing: 3px;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-        }
-
-        .btn-hero {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 0.8rem 2rem;
-            border-radius: 0;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-hero:hover {
-            background: white;
-            color: var(--dark);
-        }
-
-        /* SEÇÕES */
+        /* SEÇÕES PRINCIPAIS */
         .section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 300;
-            color: var(--dark);
-            margin-bottom: 3rem;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        /* MAPA */
-        #map {
-            height: 400px;
-            border-radius: 0;
-            margin-bottom: 2rem;
-        }
-
-        .map-filters {
+            min-height: 100vh;
             display: flex;
-            gap: 1rem;
+            align-items: center;
             justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        /* TIPOGRAFIA NO ESTILO DA IMAGEM */
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            letter-spacing: 2px;
+            margin-bottom: 3rem;
+        }
+
+        .date {
+            font-size: 1rem;
+            color: var(--gray);
+            letter-spacing: 1px;
             margin-bottom: 2rem;
         }
 
-        .filter-btn {
-            background: transparent;
-            border: 1px solid var(--gray);
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.8rem;
+        /* CARDS NO ESTILO */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--accent);
         }
 
-        .filter-btn.active {
-            background: var(--dark);
-            color: white;
-            border-color: var(--dark);
-        }
-
-        /* ACERVO */
-        .acervo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .acervo-card {
-            border: 1px solid #e9ecef;
-            padding: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .acervo-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .acervo-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
             margin-bottom: 1rem;
         }
 
-        .acervo-card h3 {
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 1rem 0;
         }
 
-        .acervo-meta {
-            color: var(--gray);
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        /* PROFESSORES */
-        .professores-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .professor-card {
-            text-align: center;
-            padding: 2rem 1rem;
-            border: 1px solid #e9ecef;
-        }
-
-        .professor-foto {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 1rem;
-            border: 3px solid #f8f9fa;
-        }
-
-        .professor-card h3 {
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-        }
-
-        .professor-meta {
-            color: var(--gray);
+        .card-meta {
             font-size: 0.9rem;
-            margin-bottom: 1rem;
+            color: var(--gray);
+            letter-spacing: 1px;
+        }
+
+        /* GRID DE CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
         }
 
         /* TOUR VIRTUAL */
         .tour-container {
-            border: 1px solid #e9ecef;
-            margin-bottom: 2rem;
-        }
-
-        .tour-viewer {
-            height: 400px;
-            background: #f8f9fa;
-            position: relative;
-            overflow: hidden;
+            width: 100%;
+            height: 500px;
+            margin: 2rem 0;
         }
 
         .tour-iframe {
             width: 100%;
             height: 100%;
             border: none;
+            border-left: 3px solid var(--accent);
         }
 
-        /* FORMULÁRIO SIMPLES */
-        .form-section {
-            background: #f8f9fa;
-            padding: 3rem 2rem;
-        }
-
-        .form-simple {
-            max-width: 500px;
+        /* FORMULÁRIO MINIMAL */
+        .form-minimal {
+            max-width: 400px;
             margin: 0 auto;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-input {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #e9ecef;
-            background: white;
-            font-size: 0.9rem;
-        }
-
-        .btn-form {
-            background: var(--dark);
-            color: white;
+            background: transparent;
             border: none;
-            padding: 0.8rem 2rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 100%;
-            transition: background 0.3s ease;
+            border-bottom: 1px solid var(--gray);
+            color: var(--secondary);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
         }
 
-        .btn-form:hover {
-            background: var(--primary);
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent);
         }
 
-        /* BOTÃO MINHA ESCOLA */
-        .btn-escola {
-            background: var(--primary);
-            color: white;
+        .btn-submit {
+            background: var(--accent);
+            color: var(--secondary);
             border: none;
             padding: 1rem 2rem;
+            font-size: 1rem;
+            letter-spacing: 2px;
             cursor: pointer;
-            font-size: 0.9rem;
-            margin: 2rem auto;
-            display: block;
-            transition: background 0.3s ease;
+            width: 100%;
+            transition: opacity 0.3s ease;
         }
 
-        .btn-escola:hover {
-            background: var(--dark);
+        .btn-submit:hover {
+            opacity: 0.8;
         }
 
-        /* FOOTER */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
+        /* ANIMAÇÃO DE DIGITAÇÃO */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid var(--accent);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
         }
 
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
         }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--accent) }
         }
 
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .copyright {
+        /* SCROLL INDICATOR */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
             color: var(--gray);
             font-size: 0.8rem;
-            margin-top: 2rem;
-        }
-
-        /* RESPONSIVO */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .section {
-                padding: 2rem 1rem;
-            }
-
-            .map-filters {
-                flex-wrap: wrap;
-            }
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header>
-        <div class="header-container">
+    <div class="main-container">
+        <!-- CAMADAS DE CORES -->
+        <div class="color-layer layer-1 active"></div>
+        <div class="color-layer layer-2"></div>
+        <div class="color-layer layer-3"></div>
+        <div class="color-layer layer-4"></div>
+
+        <!-- HEADER -->
+        <header>
             <div class="logo">REDHEPE</div>
-            <nav>
-                <ul class="nav-menu">
-                    <li><a href="#mapa">Mapa</a></li>
-                    <li><a href="#acervo">Acervo</a></li>
-                    <li><a href="#professores">Professores</a></li>
-                    <li><a href="#tour">Tour Virtual</a></li>
-                    <li><a href="#contribuir">Contribuir</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+        </header>
 
-    <!-- HERO COM SLIDER -->
-    <section class="hero">
-        <div class="slider">
-            <div class="slide slide-1 active"></div>
-            <div class="slide slide-2"></div>
-            <div class="slide slide-3"></div>
-        </div>
-        <div class="hero-content">
-            <h1>REPOSITÓRIO DIGITAL DA HISTÓRIA DA EDUCAÇÃO DE PERNAMBUCO</h1>
-            <p>Preservando memórias, conectando gerações</p>
-            <a href="#contribuir" class="btn-hero">Quero minha escola na história</a>
-        </div>
-    </section>
+        <!-- SEÇÃO 1 - HERO -->
+        <section class="section" id="hero">
+            <div class="content">
+                <div class="main-title typing-effect">
+                    REPOSITÓRIO DIGITAL<br>DA HISTÓRIA DA EDUCAÇÃO<br>DE PERNAMBUCO
+                </div>
+                <div class="date">20.24.2/2025</div>
+                <div class="subtitle">
+                    PRESERVANDO MEMÓRIAS, CONECTANDO GERAÇÕES
+                </div>
+            </div>
+        </section>
 
-    <!-- MAPA -->
-    <section class="section" id="mapa">
-        <h2 class="section-title">MAPA DAS ESCOLAS HISTÓRICAS</h2>
-        <div class="map-filters">
-            <button class="filter-btn active" onclick="filtrarPorDecada('todos')">Todas</button>
-            <button class="filter-btn" onclick="filtrarPorDecada('60')">Anos 60</button>
-            <button class="filter-btn" onclick="filtrarPorDecada('70')">Anos 70</button>
-            <button class="filter-btn" onclick="filtrarPorDecada('80')">Anos 80</button>
-        </div>
-        <div id="map"></div>
-    </section>
+        <!-- SEÇÃO 2 - MAPA -->
+        <section class="section" id="mapa">
+            <div class="content">
+                <div class="main-title">MAPA DAS ESCOLAS</div>
+                <div class="date">20.422.0/2025</div>
+                
+                <div class="card">
+                    <div class="card-title">ESCOLAS HISTÓRICAS</div>
+                    <div class="card-value">42</div>
+                    <div class="card-meta">INSTITUIÇÕES CATALOGADAS</div>
+                </div>
 
-    <!-- ACERVO -->
-    <section class="section" id="acervo">
-        <h2 class="section-title">ACERVO DIGITAL</h2>
-        <div class="acervo-grid">
-            <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Livros antigos">
-                <h3>História da Educação no Sertão</h3>
-                <div class="acervo-meta">Artigo Científico • 2018</div>
-                <p>Análise do desenvolvimento educacional na região do sertão pernambucano.</p>
+                <div class="tour-container">
+                    <iframe class="tour-iframe" 
+                            src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sCAoSLEFGMVFpcFBfSUdJbU1sT25nVzZvaWtqT19HLWlPcGNJN0g0TjJvNlJfUzJV!2m2!1d-9.3885!2d-40.5024!3f0!4f0!5f0.7820865974627469" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
             </div>
-            <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sala de aula">
-                <h3>Metodologias de Ensino Rural</h3>
-                <div class="acervo-meta">Dissertação • 2015</div>
-                <p>Estudo sobre práticas pedagógicas em escolas rurais de Petrolina.</p>
-            </div>
-            <div class="acervo-card">
-                <img src="https://images.unsplash.com/photo-1581093458791-8a6c6bc30f4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Pesquisadores">
-                <h3>Banco de Pesquisadores</h3>
-                <div class="acervo-meta">Base de Dados • Atualizado 2024</div>
-                <p>Catálogo de pesquisadores e suas linhas de estudo sobre educação.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- PROFESSORES QUE FIZERAM HISTÓRIA -->
-    <section class="section" id="professores">
-        <h2 class="section-title">PROFESSORES QUE FIZERAM HISTÓRIA</h2>
-        <div class="professores-grid">
-            <div class="professor-card">
-                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professor" class="professor-foto">
-                <h3>Prof. Carlos Albuquerque</h3>
-                <div class="professor-meta">EMAAF • 1975-2000</div>
-                <p>Pioneiro no ensino agrícola no sertão pernambucano.</p>
-            </div>
-            <div class="professor-card">
-                <img src="https://images.unsplash.com/photo-1544717275-2b62e17adc91?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professora" class="professor-foto">
-                <h3>Profa. Maria dos Santos</h3>
-                <div class="professor-meta">Colégio Estadual • 1960-1990</div>
-                <p>Referência em educação inclusiva antes da legislação.</p>
-            </div>
-            <div class="professor-card">
-                <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Professor" class="professor-foto">
-                <h3>Prof. João Silva</h3>
-                <div class="professor-meta">Escola Técnica • 1980-2010</div>
-                <p>Desenvolveu métodos inovadores para ensino profissionalizante.</p>
-            </div>
-        </div>
-    </section>
+        <!-- SEÇÃO 3 - ACERVO -->
+        <section class="section" id="acervo">
+            <div class="content">
+                <div class="main-title">ACERVO DIGITAL</div>
+                <div class="date">20.4220/2025</div>
 
-    <!-- TOUR VIRTUAL -->
-    <section class="section" id="tour">
-        <h2 class="section-title">TOUR VIRTUAL 360°</h2>
-        <div class="tour-container">
-            <div class="tour-viewer">
-                <iframe class="tour-iframe" src="https://www.google.com/maps/embed?pb=!4v1700000000000!6m8!1m7!1sCAoSLEFGMVFpcFBfSUdJbU1sT25nVzZvaWtqT19HLWlPcGNJN0g0TjJvNlJfUzJV!2m2!1d-9.3885!2d-40.5024!3f0!4f0!5f0.7820865974627469" allowfullscreen></iframe>
-            </div>
-        </div>
-    </section>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-title">DOCUMENTOS</div>
+                        <div class="card-value">1.247</div>
+                        <div class="card-meta">ITENS DIGITALIZADOS</div>
+                    </div>
 
-    <!-- FORMULÁRIO SIMPLES -->
-    <section class="form-section" id="contribuir">
-        <h2 class="section-title">MINHA ESCOLA, MINHA HISTÓRIA</h2>
-        <form class="form-simple">
-            <div class="form-group">
-                <label for="nome">SEU NOME</label>
-                <input type="text" id="nome" required>
-            </div>
-            <div class="form-group">
-                <label for="email">SEU EMAIL</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="form-group">
-                <label for="escola">NOME DA ESCOLA</label>
-                <input type="text" id="escola" required>
-            </div>
-            <div class="form-group">
-                <label for="historia">SUA HISTÓRIA</label>
-                <textarea id="historia" rows="3" placeholder="Compartilhe suas memórias..." required></textarea>
-            </div>
-            <button type="submit" class="btn-form">ENVIAR MINHA HISTÓRIA</button>
-        </form>
-        <button class="btn-escola">QUERO MINHA ESCOLA NA HISTÓRIA</button>
-    </section>
+                    <div class="card">
+                        <div class="card-title">FOTOGRAFIAS</div>
+                        <div class="card-value">856</div>
+                        <div class="card-meta">IMAGENS HISTÓRICAS</div>
+                    </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="logo" style="color: white; margin-bottom: 2rem;">REDHEPE</div>
-            <div class="footer-links">
-                <a href="#mapa">Mapa</a>
-                <a href="#acervo">Acervo</a>
-                <a href="#professores">Professores</a>
-                <a href="#tour">Tour Virtual</a>
-                <a href="#contribuir">Contribuir</a>
+                    <div class="card">
+                        <div class="card-title">PESQUISAS</div>
+                        <div class="card-value">189</div>
+                        <div class="card-meta">ARTIGOS CIENTÍFICOS</div>
+                    </div>
+                </div>
             </div>
-            <div class="copyright">
-                © 2024 Repositório Digital da História da Educação de Pernambuco. Todos os direitos reservados.
-            </div>
-        </div>
-    </footer>
+        </section>
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <!-- SEÇÃO 4 - CONTRIBUA -->
+        <section class="section" id="contribua">
+            <div class="content">
+                <div class="main-title">CONTRIBUA</div>
+                <div class="date">20.42/2025</div>
+
+                <div class="card">
+                    <div class="card-title">SUA ESCOLA NA HISTÓRIA</div>
+                    <div class="card-value">+ 188</div>
+                    <div class="card-meta">HISTÓRIAS RECEBIDAS</div>
+                </div>
+
+                <form class="form-minimal">
+                    <input type="text" class="form-input" placeholder="SEU NOME" required>
+                    <input type="email" class="form-input" placeholder="SEU EMAIL" required>
+                    <input type="text" class="form-input" placeholder="NOME DA ESCOLA" required>
+                    <textarea class="form-input" placeholder="SUA HISTÓRIA" rows="3" required></textarea>
+                    <button type="submit" class="btn-submit">ENVIAR HISTÓRIA</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 5 - PROFESSORES -->
+        <section class="section" id="professores">
+            <div class="content">
+                <div class="main-title">PROFESSORES</div>
+                <div class="date">20.422.0/2025</div>
+
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-title">CARLOS ALBUQUERQUE</div>
+                        <div class="card-value">EMAAF</div>
+                        <div class="card-meta">1975-2000 • PIONEIRO DO ENSINO AGRÍCOLA</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">MARIA SANTOS</div>
+                        <div class="card-value">COLÉGIO ESTADUAL</div>
+                        <div class="card-meta">1960-1990 • EDUCAÇÃO INCLUSIVA</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCROLL INDICATOR -->
+        <div class="scroll-indicator">SCROLL</div>
+    </div>
+
     <script>
-        // SLIDER AUTOMÁTICO
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        
-        function nextSlide() {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }
-        
-        setInterval(nextSlide, 5000);
+        // CONTROLE DAS CAMADAS DE CORES
+        const layers = document.querySelectorAll('.color-layer');
+        const sections = document.querySelectorAll('.section');
 
-        // MAPA
-        let map;
-        let marcadores = [];
-
-        function inicializarMapa() {
-            map = L.map('map').setView([-8.063, -34.871], 7);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // Escolas exemplo
-            const escolas = [
-                { nome: "EMAAF Petrolina", lat: -9.3885, lng: -40.5024, decada: "70" },
-                { nome: "Colégio Estadual Recife", lat: -8.063, lng: -34.871, decada: "60" },
-                { nome: "Ginásio Pernambucano", lat: -8.055, lng: -34.880, decada: "50" }
-            ];
-
-            escolas.forEach(escola => {
-                const marcador = L.marker([escola.lat, escola.lng])
-                    .addTo(map)
-                    .bindPopup(`<strong>${escola.nome}</strong><br>Década de ${escola.decada}`);
-                marcador.escola = escola;
-                marcadores.push(marcador);
-            });
-        }
-
-        function filtrarPorDecada(decada) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        function updateColors() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
             
-            marcadores.forEach(marcador => {
-                if (decada === 'todos' || marcador.escola.decada === decada) {
-                    map.addLayer(marcador);
-                } else {
-                    map.removeLayer(marcador);
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                const sectionTop = rect.top + scrollY;
+                const sectionBottom = sectionTop + rect.height;
+                
+                // Calcula a visibilidade da seção
+                const visibleHeight = Math.min(sectionBottom, scrollY + windowHeight) - Math.max(sectionTop, scrollY);
+                const visibility = visibleHeight / windowHeight;
+                
+                if (visibility > 0.3) {
+                    // Ativa a layer correspondente
+                    layers.forEach(layer => layer.classList.remove('active'));
+                    layers[index].classList.add('active');
                 }
             });
         }
 
-        // FORMULÁRIO
-        document.querySelector('.form-simple').addEventListener('submit', function(e) {
+        // EFEITO DE DIGITAÇÃO
+        function initTypingEffect() {
+            const titles = document.querySelectorAll('.main-title');
+            titles.forEach(title => {
+                if (title.classList.contains('typing-effect')) {
+                    const text = title.textContent;
+                    title.textContent = '';
+                    title.style.borderRight = '2px solid var(--accent)';
+                    
+                    let i = 0;
+                    const typeWriter = () => {
+                        if (i < text.length) {
+                            title.textContent += text.charAt(i);
+                            i++;
+                            setTimeout(typeWriter, 100);
+                        } else {
+                            title.style.borderRight = 'none';
+                        }
+                    };
+                    typeWriter();
+                }
+            });
+        }
+
+        // FORM SUBMIT
+        document.querySelector('form').addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('Obrigado por contribuir com sua história! Entraremos em contato em breve.');
+            alert('HISTÓRIA ENVIADA! OBRIGADO POR CONTRIBUIR.');
             this.reset();
         });
 
-        document.querySelector('.btn-escola').addEventListener('click', function() {
-            document.getElementById('contribuir').scrollIntoView({ behavior: 'smooth' });
+        // INICIALIZAÇÃO
+        window.addEventListener('scroll', updateColors);
+        window.addEventListener('load', function() {
+            updateColors();
+            initTypingEffect();
         });
 
-        // INICIALIZAÇÃO
-        document.addEventListener('DOMContentLoaded', function() {
-            inicializarMapa();
+        // EFEITO DE SCROLL SUAVE
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
     </script>
 </body>
